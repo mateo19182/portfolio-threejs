@@ -14,16 +14,31 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; // Smooth camera movement
 controls.dampingFactor = 0.05;
 
-// Create five cubes
+// Create five cubes with different colors and messages
 const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true }); // Use wireframe for debugging
+const materials = [
+    new THREE.MeshBasicMaterial({ color: 0xff0000, wireframe: true }), // Red
+    new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true }), // Green
+    new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true }), // Blue
+    new THREE.MeshBasicMaterial({ color: 0xffff00, wireframe: true }), // Yellow
+    new THREE.MeshBasicMaterial({ color: 0xff00ff, wireframe: true }), // Magenta
+];
+
+const messages = [
+    "This is the red cube!",
+    "This is the green cube!",
+    "This is the blue cube!",
+    "This is the yellow cube!",
+    "This is the magenta cube!",
+];
 
 const cubes = [];
 for (let i = 0; i < 5; i++) {
-    const cube = new THREE.Mesh(geometry, material);
+    const cube = new THREE.Mesh(geometry, materials[i]);
     cube.position.x = (i - 2) * 3; // Position cubes along the x-axis
+    cube.userData.message = messages[i]; // Store a message for each cube
     scene.add(cube);
-    cubes.push(cube); // Store cubes in an array for debugging
+    cubes.push(cube);
 }
 
 console.log('Cubes created:', cubes); // Debugging: Log cubes to the console
@@ -66,11 +81,14 @@ window.addEventListener('click', (event) => {
 
     if (intersects.length > 0) {
         // If a cube is clicked
-        console.log('Cube clicked:', intersects[0].object); // Debugging: Log the clicked cube
+        const clickedCube = intersects[0].object;
+        console.log('Cube clicked:', clickedCube); // Debugging: Log the clicked cube
         animate = false; // Pause animation
 
-        // Show overlay
+        // Show overlay with the cube's message
         const overlay = document.getElementById('overlay');
+        const overlayText = document.getElementById('overlay-text');
+        overlayText.textContent = clickedCube.userData.message; // Set the message
         overlay.style.display = 'block';
     }
 });
